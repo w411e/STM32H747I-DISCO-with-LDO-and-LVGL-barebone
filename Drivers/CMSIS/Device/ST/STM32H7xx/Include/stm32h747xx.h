@@ -17840,7 +17840,7 @@ typedef struct
 #define PWR_CR3_SMPSEN                 PWR_CR3_SMPSEN_Msk                      /*!< SMPS Enable */
 #define PWR_CR3_LDOEN_Pos              (1U)
 #define PWR_CR3_LDOEN_Msk              (0x1UL << PWR_CR3_LDOEN_Pos)            /*!< 0x00000002 */
-#define PWR_CR3_LDOEN                  PWR_CR3_LDOEN_Msk                       /*!< Low Drop Output regulator enable */
+#define PWR_CR3_LDOEN                  PWR_CR3_LDOEN_Msk                       /*!< Low Drop Output regulator enable */ // ADDED in System.c
 #define PWR_CR3_BYPASS_Pos             (0U)
 #define PWR_CR3_BYPASS_Msk             (0x1UL << PWR_CR3_BYPASS_Pos)           /*!< 0x00000001 */
 #define PWR_CR3_BYPASS                 PWR_CR3_BYPASS_Msk                      /*!< Power Management Unit bypass */

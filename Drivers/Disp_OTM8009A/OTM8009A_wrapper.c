@@ -114,7 +114,7 @@ void DSI_EndOfRefreshIRQ_Callback(void)
           /* Disable DSI Wrapper */
           __DSI_WRAPPER_DISABLE();
           /* Update LTDC configuaration */
-          LTDC_LAYER(0)->CFBAR  = ActualBufferPointer + LCD_ActiveRegion  * HACT_HELPER * sizeof(uint32_t);
+          LTDC_LAYER(0)->CFBAR  = (uint32_t)ActualBufferPointer + LCD_ActiveRegion  * HACT_HELPER * sizeof(uint32_t); // ADDED
           LTDC->SRCR |= LTDC_SRCR_IMR;
           /* Enable DSI Wrapper */
           __DSI_WRAPPER_ENABLE();

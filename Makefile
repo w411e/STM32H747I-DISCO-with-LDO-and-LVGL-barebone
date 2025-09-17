@@ -193,8 +193,16 @@ LDFLAGS = $(MCU) -static -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-
 
 
 
+# VERSION WITHOUT FLASHING
+# all: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
+# 	@echo -----------------------------------------------------
+# 	@echo -----------------------------------------------------
 
+# app: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
+# 	@echo -----------------------------------------------------
+# 	@echo -----------------------------------------------------
 
+# VERSION WITH FLASHING
 all: $(COMPILATION_DIR) flash $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
 	@echo -----------------------------------------------------
 	@echo -----------------------------------------------------
@@ -209,8 +217,10 @@ flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARG
 	openocd \
 	-f interface/stlink.cfg -f target/stm32h7x.cfg \
 	-c "init" -c "reset halt" \
-	-c "flash write_image erase $(BUILD_DIR)/$(TARGET).bin 0x8000000" \
+	-c "flash write_image erase $(BUILD_DIR)/$(TARGET).elf" \
 	-c "reset" -c "shutdown"
+# -c "flash write_image erase $(BUILD_DIR)/$(TARGET).bin 0x8000000" \
+# -c "reset" -c "shutdown"
 
 #flash board using STM32Cube Programmer Command line interface
 #ENV VAR: "STM32_CubeProgrammerPATH:  must be declared in your account variables

@@ -4,6 +4,7 @@
             "name": "STM32 H7",
             "includePath": [
                 "${workspaceFolder}/Application/**",
+                "${workspaceFolder}/APP_CM7/**",
                 "${workspaceFolder}/Drivers/**",
                 "${workspaceFolder}/Config/**",
                 "${workspaceFolder}/Middlewares/**"
@@ -16,7 +17,7 @@
                 "STM32H747xx"
             ],
             "intelliSenseMode": "gcc-x64",
-            "compilerPath": "D:/GNU_Tools/GNU Arm Embedded Toolchain/10 2021.10/bin/arm-none-eabi-gcc.exe", //dk why we have pass full path
+            "compilerPath": "C:/Users/Valentin Kniesel/.vscode/extensions/metalcode-eu.windows-arm-none-eabi-0.1.6/bin/arm-none-eabi-gcc.exe", // ADDED changed path
             "compilerArgs": [
                 "-mcpu=cortex-m7",
                 "-mthumb"
