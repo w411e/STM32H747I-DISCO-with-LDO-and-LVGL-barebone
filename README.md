@@ -11,7 +11,7 @@ There might be changes in System.c that are needed to be done for LDO with high 
 ## Changes To Make It Run On My System
 | File | Changed Code | Comment |
 |------------------|------------------|------------------|
-| System.c         | #define PWR_SUPPLY_CONFIG_MASK (PWR_CR3_LDOEN | PWR_CR3_SMPSEN | PWR_CR3_BYPASS) | SMPS and Bypass need to be cleared with MODIFY_REG() |
+| System.c         | #define PWR_SUPPLY_CONFIG_MASK (PWR_CR3_LDOEN \| PWR_CR3_SMPSEN \| PWR_CR3_BYPASS) | SMPS and Bypass need to be cleared with MODIFY_REG() |
 | System.c         | MODIFY_REG (PWR->CR3, PWR_SUPPLY_CONFIG_MASK, PWR_CR3_LDO) | changed from SMPS to LDO |
 | System.c         | while(wait for LDO) | Waiting for status flag of power supply to be stable |
 | System.c         | set RCC_APB4ENR_SYSCFGEN | Enable SYSCFG Clock |
