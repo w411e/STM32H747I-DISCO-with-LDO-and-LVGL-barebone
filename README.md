@@ -11,6 +11,18 @@ This Version changes the power delivery from **SMPS** to **LDO**. The hardware n
 
 There might be changes in System.c that are needed to be done for LDO with high speed 480MHz PLL configuration. The following changes are collected from the reference manual. Some changes to VOS0 and power setup are significant and the µc got stuck inside the setup if not done properly. (p. 297 f.)
 
+Furthermore I used different tools to build/debug this:
+
+- Cortex-Debug (1.12.1)
+- GNU Linker Map files (1.1.0)
+- LinkerScript (1.0.4)
+- STM32Cube:
+	- clangd (0.2.0)
+	- Debug Core (0.19.0)
+	- Debug STLink GDB Server (0.10.1)
+	- for Vusual Studio Code (2.1.1)
+- windows-arm-none-eabi (0.1.6)
+
 ## Changes To Make It Run On My System
 | File | Changed Code | Comment |
 |------------------|------------------|------------------|
