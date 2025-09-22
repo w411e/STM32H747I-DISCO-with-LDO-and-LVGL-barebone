@@ -2,10 +2,13 @@
 https://github.com/trteodor/stm32h747_disco_lvgl_bare_metal (cloned 2025.09.16)
 
 ## About This Repo
-This repo was used to setup an STM32H747I-DISCO board with example programs implementing LVGL. The PLL speed is set to 480MHz (max) and the power is delivered with LDO not with SMPS! Bypass needs to be disabled. For SMPS look into original repo. Be carefull which powersource you use. There are hardware pins to be changed for changing from SMPS to LDO! Look on the ST website for further infos about the pins, the layout and how to set things up and what the differences are.
+This repo was used to setup an STM32H747I-DISCO board with example programs implementing LVGL. The PLL speed is set to 480MHz (max) and the power is delivered with LDO not with SMPS! Bypass needs to be disabled. For SMPS look into original repo.
+
+Be carefull which powersource you use. There are hardware pins to be changed for changing from SMPS to LDO! Look on the ST website for further infos about the pins, the layout and how to set things up and what the differences are.
 
 ## Changes for this repo
 This Version changes the power delivery from **SMPS** to **LDO**. The hardware needs to be prepared for this. The standard delivery is SMPS, so if you change to LDO hardware changes are mandatory.
+
 There might be changes in System.c that are needed to be done for LDO with high speed 480MHz PLL configuration. The following changes are collected from the reference manual. Some changes to VOS0 and power setup are significant and the µc got stuck inside the setup if not done properly. (p. 297 f.)
 
 ## Changes To Make It Run On My System
