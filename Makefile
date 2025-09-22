@@ -142,6 +142,7 @@ AS_DEFS =
 # C defines
 C_DEFS += -DSTM32H747xx
 C_DEFS += -DCORE_CM7
+C_DEFS += -DUSE_PWR_LDO_SUPPLY
 # AS includes
 AS_INCLUDES = 
 # C includes
@@ -194,16 +195,7 @@ LDFLAGS = $(MCU) -static -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-
 
 
 # VERSION WITHOUT FLASHING
-# all: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
-# 	@echo -----------------------------------------------------
-# 	@echo -----------------------------------------------------
-
-# app: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
-# 	@echo -----------------------------------------------------
-# 	@echo -----------------------------------------------------
-
-# VERSION WITH FLASHING
-all: $(COMPILATION_DIR) flash $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
+all: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
 	@echo -----------------------------------------------------
 	@echo -----------------------------------------------------
 
@@ -211,23 +203,32 @@ app: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(
 	@echo -----------------------------------------------------
 	@echo -----------------------------------------------------
 
+# VERSION WITH FLASHING
+# all: $(COMPILATION_DIR) flash $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
+# 	@echo -----------------------------------------------------
+# 	@echo -----------------------------------------------------
+
+# app: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
+# 	@echo -----------------------------------------------------
+# 	@echo -----------------------------------------------------
+
 
 # flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-	openocd \
-	-f interface/stlink.cfg -f target/stm32h7x.cfg \
-	-c "init" -c "reset halt" \
-	-c "flash write_image erase $(BUILD_DIR)/$(TARGET).elf" \
-	-c "reset" -c "shutdown"
+# flash: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+# 	openocd \
+# 	-f interface/stlink.cfg -f target/stm32h7x.cfg \
+# 	-c "init" -c "reset halt" \
+# 	-c "flash write_image erase $(BUILD_DIR)/$(TARGET).elf" \
+# 	-c "reset" -c "shutdown"
 # -c "flash write_image erase $(BUILD_DIR)/$(TARGET).bin 0x8000000" \
 # -c "reset" -c "shutdown"
 
 #flash board using STM32Cube Programmer Command line interface
-#ENV VAR: "STM32_CubeProgrammerPATH:  must be declared in your account variables
-CubeF: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
-	STM32_Programmer_CLI.exe -c port=SWD index=0 reset=HWrst -el \
-		"$(STM32_CubeProgrammerPATH)\ExternalLoader\MT25TL01G_STM32H747I-DISCO.stldr" \
-		-e all -d .build/h747disco_tut_FULL_IMAGE.hex -HardRst
+.PHONY: CubeF # SWrst, HWrst, Crst
+CubeF: $(COMPILATION_DIR) $(BUILD_DIR)/$(TARGET).elf
+	STM32_Programmer_CLI.exe -c port=SWD index=0 reset=HWrst \
+		-e all -d $(BUILD_DIR)/$(TARGET).elf
+
 
 #######################################
 # build the application
@@ -288,4 +289,5 @@ clean:
 #\
 #-c "verify_image $(BUILD_DIR)/h747disco_tut.bin" -c "reset" -c "shutdown"
 
--include $(wildcard $(COMPILATION_DIR)*.d)
+CFLAGSC += -MMD -MP -MF"$(@:%.o=%.d)"
+-include $(wildcard $(COMPILATION_DIR)/*.d)

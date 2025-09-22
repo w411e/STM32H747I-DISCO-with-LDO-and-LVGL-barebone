@@ -151,6 +151,7 @@
   uint32_t SystemD2Clock = 64000000;
   const  uint8_t D1CorePrescTable[16] = {0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 4, 6, 7, 8, 9};
 
+
 /**
   * @}
   */
@@ -186,6 +187,7 @@ void SystemInit (void)
  SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
 
 #if defined(CORE_CM7)
+
   /* Reset the RCC clock configuration to the default reset state ------------*/
    /* Increasing the CPU frequency */
   if(FLASH_LATENCY_DEFAULT  > (READ_BIT((FLASH->ACR), FLASH_ACR_LATENCY)))
@@ -220,7 +222,7 @@ void SystemInit (void)
   RCC->D3CFGR = 0x00000000;
 
   /* Reset PLLCKSELR register */
-  RCC->PLLCKSELR = 0x02020200;
+  RCC->PLLCKSELR = 0x02020200; // DIVM1, DIVM2, DIVM3; PLLSRC unset
 
   /* Reset PLLCFGR register */
   RCC->PLLCFGR = 0x01FF0000;
@@ -404,6 +406,101 @@ void SystemCoreClockUpdate (void)
 #else
   SystemCoreClock = common_system_clock;
 #endif /* CORE_CM4 */
+}
+
+/**
+  * @brief  Exit Run* mode and Configure the system Power Supply
+  *
+  * @note   This function exits the Run* mode and configures the system power supply
+  *         according to the definition to be used at compilation preprocessing level.
+  *         The application shall set one of the following configuration option:
+  *           - PWR_LDO_SUPPLY
+  *           - PWR_DIRECT_SMPS_SUPPLY
+  *           - PWR_EXTERNAL_SOURCE_SUPPLY
+  *           - PWR_SMPS_1V8_SUPPLIES_LDO
+  *           - PWR_SMPS_2V5_SUPPLIES_LDO
+  *           - PWR_SMPS_1V8_SUPPLIES_EXT_AND_LDO
+  *           - PWR_SMPS_2V5_SUPPLIES_EXT_AND_LDO
+  *           - PWR_SMPS_1V8_SUPPLIES_EXT
+  *           - PWR_SMPS_2V5_SUPPLIES_EXT
+  *
+  * @note   The function modifies the PWR->CR3 register to enable or disable specific
+  *         power supply modes and waits until the voltage level flag is set, indicating
+  *         that the power supply configuration is stable.
+  *
+  * @param  None
+  * @retval None
+  */
+void ExitRun0Mode(void)
+{
+#if defined(USE_PWR_LDO_SUPPLY)
+__NOP();
+  #if defined(SMPS) // WHERE IS IT DEFINED?!?
+    /* Exit Run* mode by disabling SMPS and enabling LDO */
+    PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_SMPSEN | PWR_CR3_BYPASS)) | PWR_CR3_SMPSEN;
+  #else
+    /* Enable LDO mode */
+    //PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_SMPSEN | PWR_CR3_BYPASS)) | PWR_CR3_LDOEN;
+    PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_SMPSEN | PWR_CR3_BYPASS)) | PWR_CR3_LDOEN;
+  #endif /* SMPS */
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_EXTERNAL_SOURCE_SUPPLY)
+  #if defined(SMPS)
+    /* Exit Run* mode */
+    PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_SMPSEN | PWR_CR3_LDOEN)) | PWR_CR3_BYPASS;
+  #else
+    PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_LDOEN)) | PWR_CR3_BYPASS;
+  #endif /* SMPS */
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_DIRECT_SMPS_SUPPLY) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 &= ~(PWR_CR3_LDOEN);
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_1V8_SUPPLIES_LDO) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 |= PWR_CR3_SMPSLEVEL_0 | PWR_CR3_SMPSEN | PWR_CR3_LDOEN;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_2V5_SUPPLIES_LDO) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 |= PWR_CR3_SMPSLEVEL_1 | PWR_CR3_SMPSEN | PWR_CR3_LDOEN;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_1V8_SUPPLIES_EXT_AND_LDO) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 |= PWR_CR3_SMPSLEVEL_0 | PWR_CR3_SMPSEXTHP | PWR_CR3_SMPSEN | PWR_CR3_LDOEN;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_2V5_SUPPLIES_EXT_AND_LDO) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 |= PWR_CR3_SMPSLEVEL_1 | PWR_CR3_SMPSEXTHP | PWR_CR3_SMPSEN | PWR_CR3_LDOEN;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_1V8_SUPPLIES_EXT) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_LDOEN)) | PWR_CR3_SMPSLEVEL_0 | PWR_CR3_SMPSEXTHP | PWR_CR3_SMPSEN | PWR_CR3_BYPASS;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#elif defined(USE_PWR_SMPS_2V5_SUPPLIES_EXT) && defined(SMPS)
+  /* Exit Run* mode */
+  PWR->CR3 = (PWR->CR3 & ~(PWR_CR3_LDOEN)) | PWR_CR3_SMPSLEVEL_1 | PWR_CR3_SMPSEXTHP | PWR_CR3_SMPSEN | PWR_CR3_BYPASS;
+  /* Wait till voltage level flag is set */
+  while ((PWR->CSR1 & PWR_CSR1_ACTVOSRDY) == 0U)
+  {}
+#else
+  /* No system power supply configuration is selected at exit Run* mode */
+#endif /* USE_PWR_LDO_SUPPLY */
 }
 
 

@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "STM32 H7",
+            "name": "STM32H7-Clangd",
             "includePath": [
                 "${workspaceFolder}/Application/**",
                 "${workspaceFolder}/APP_CM7/**",
@@ -14,9 +14,11 @@
                 // "DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "STM32H747xx"
+                "CORE_CM7",
+                "STM32H747xx",
+                "USE_PWR_LDO_SUPPLY"
             ],
-            "intelliSenseMode": "gcc-x64",
+            "intelliSenseMode": "clang-x64",
             "compilerPath": "C:/Users/Valentin Kniesel/.vscode/extensions/metalcode-eu.windows-arm-none-eabi-0.1.6/bin/arm-none-eabi-gcc.exe", // ADDED changed path
             "compilerArgs": [
                 "-mcpu=cortex-m7",

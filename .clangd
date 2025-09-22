@@ -1,0 +1,22 @@
+CompileFlags:
+  Add: 
+    - -mcpu=cortex-m7
+    - -mthumb
+    - -DSTM32H747xx
+    - -IAPP_CM7
+    - -IDrivers/CMSIS/Device/ST/STM32H7xx/Include
+    - -IDrivers/CMSIS/Include
+    - -IDrivers/GPIO
+    - -IDrivers/usart_dlt
+    - -IMiddlewares/DLTuc/src
+    - -IConfig
+    - -IDrivers/System
+    - -IDrivers/SDRAM
+    - -IDrivers/SDRAM/is42s32800j
+    - -IDrivers/Disp_OTM8009A
+    - -IDrivers/DMA2d
+    - -IDrivers/qspi
+    - -IDrivers/TouchCntrl_ft6x06
+    - -IDrivers/TouchCntrl_ft6x06/ft6x06
+    - -IAPP_CM7/UI_GenBySquareLineSt
+    - -IMiddlewares

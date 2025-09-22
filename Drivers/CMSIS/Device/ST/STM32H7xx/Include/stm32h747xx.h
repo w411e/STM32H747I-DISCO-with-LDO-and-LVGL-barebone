@@ -214,7 +214,9 @@ typedef enum
   */
 #define DUAL_CORE  /*!< Dual core line feature */
 
-#define SMPS       /*!< Switched mode power supply feature */
+// #define SMPS       /*!< Switched mode power supply feature */
+
+#define LDO
 
 
 

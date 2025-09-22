@@ -1,71 +1,26 @@
-/*
-#include "stm32h7xx.h"  // adjust include path if needed
-#include "main.h"       // for LED pin/port definitions
-
-void LedsInit(void)
-{
-    // Enable GPIOI clock
-    RCC->AHB4ENR |= RCC_AHB4ENR_GPIOIEN;
-
-    GPIO_InitTypeDef GPIO_InitStruct;
-    GPIO_InitStruct.Pin = LED2_Pin | LED3_Pin; // both LEDs
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-
-    GPIO_Init(LED3_GPIO_Port, &GPIO_InitStruct);
-}
-
-void delay_ms(uint32_t ms)
-{
-    // Simple busy wait, assuming SysTick at 1ms
-    uint32_t start = SysTick->VAL;
-    for(uint32_t i = 0; i < ms*1000; i++) { __NOP(); }
-}
-
-int main(void)
-{
-    //PLL_Config480Mhz();
-    ConfigSysTick1ms();
-    LedsInit();
-
-    while(1)
-    {
-        // Toggle LEDs
-        LED3_GPIO_Port->ODR ^= LED3_Pin;
-        LED2_GPIO_Port->ODR ^= LED2_Pin;
-
-        // Delay ~500ms
-        delay_ms(5000);
-    }
-}
-*/
-
-
-
 #include "main.h"
 
+#define LED2 LED2_GPIO_Port
 
 void LedsInit(void)
 {
     RCC->AHB4ENR |= RCC_AHB4ENR_GPIOIEN;
 
     GPIO_InitTypeDef GPIO_InitStruct;
-    GPIO_InitStruct.Pin = LED3_Pin|LED2_Pin; // both LEDs
+    GPIO_InitStruct.Pin = LED2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 
-    GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
+    GPIO_Init(LED2, &GPIO_InitStruct);
 }
 
 
 int main()
 {
-    PLL_Config480Mhz(); // NOT WORKING DEBUG
-    ConfigSysTick1ms();
+    PLL_Config480Mhz();
     LedsInit();
-    LED3_GPIO_Port->ODR ^= LED3_Pin;
+    ConfigSysTick1ms();
     UART1InitTransmitWithDMAand_ucDLTlib();
     LOG("Compilation date: %s time: %s Sw_ver: %s", __DATE__, __TIME__,SW_VERSION);
     SDRAM_FMC_Init();    

@@ -63,5 +63,14 @@
         "lv_gpu_swm341_dma2d.h": "c",
         "functional": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": false,
+    "cmake.ignoreCMakeListsMissing": true,
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.arguments": [
+        "--completion-style=detailed",
+        "--clang-tidy",
+        "--header-insertion=iwyu"
+    ],
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled"
 }
